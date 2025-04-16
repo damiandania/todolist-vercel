@@ -18,7 +18,7 @@ app.post('/api/tasks', (req, res) => {
   if (!name || name.trim() === '') {
     return res.status(400).json({ error: 'El nombre de la tarea es requerido.' });
   }
-  const newTask = { id: currentId++, name, done: false };
+  const newTask = { id: currentId++, name, completed: false };
   tasks.push(newTask);
   res.status(201).json(newTask);
 });
