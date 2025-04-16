@@ -27,7 +27,7 @@ app.put('/api/tasks/:id', (req, res) => {
   if (!task) {
     return res.status(404).json({ error: 'Tarea no encontrada.' });
   }
-  task.done = !task.done;
+  task.completed = !task.completed; // Cambiar el estado de 'completed'
   res.json(task);
 });
 
