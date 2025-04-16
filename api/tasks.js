@@ -4,8 +4,10 @@ const serverless = require('serverless-http');
 const app = express();
 app.use(express.json());
 
-let tasks = [];
 let currentId = 1;
+let tasks = [
+	{ id: currentId, name: "Exemple de tâche", completed: false }
+];
 
 app.get('/api/tasks', (req, res) => {
   res.json(tasks);
