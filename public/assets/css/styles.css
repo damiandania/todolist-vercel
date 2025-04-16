@@ -1,0 +1,224 @@
+:root {
+  --primary-color: #858585;
+  --secondary-color: #f1f1f1;
+  --tertiary-color: #00a0df;
+  --background-color: #ffffff;
+}
+
+body.dark-mode {
+  --primary-color: #f1f1f1;
+  --secondary-color: #424242;
+  --tertiary-color: #00a0df;
+  --background-color: #252525;
+  background-image: url('../images/dark_background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: var(--secondary-color);
+}
+
+body.dark-mode #darkModeIcon {
+  color: var(--secondary-color);
+}
+
+body.dark-mode button {
+  background-color: var(--secondary-color);
+  border: 3px solid var(--secondary-color);
+  color: var(--primary-color);
+}
+
+body.dark-mode button:hover {
+  background-color: var(--tertiary-color);
+  border: 3px solid var(--tertiary-color);
+}
+
+body.dark-mode button.active {
+  color: var(--primary-color);
+  background-color: var(--tertiary-color);
+  border: 3px solid var(--tertiary-color);
+}
+
+body.dark-mode .sort-link {
+  color: var(--primary-color);
+}
+
+body.dark-mode .sort-link.active {
+  color: var(--tertiary-color);
+}
+
+body {
+  font-family: "IBM Plex Sans", sans-serif;
+  color: var(--primary-color);
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-image: url('../images/light_background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+#app {
+  padding: 20px;
+  border-radius: 10px;
+  background-color: var(--background-color);
+}
+
+h1 {
+  font-family: Sora, sans-serif;
+}
+
+body.dark-mode h1 {
+  color: var(--primary-color);
+}
+
+#taskForm {
+  border: 3px solid var(--secondary-color);
+  border-radius: 10px;
+  padding: 5px;
+  display: flex;
+}
+
+#taskInput {
+  color: var(--primary-color);
+  font-size: 16px;
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  padding: 8px;
+  width: 100%;
+  margin-right: 8px;
+}
+
+#taskInput:focus {
+  outline: none;
+}
+
+button {
+  font-family: Sora, sans-serif;
+  color: var(--secondary-color);
+  background-color: var(--primary-color);
+  border: 3px solid var(--primary-color);
+  border-radius: 8px;
+  cursor: pointer;
+  height: 40px;
+}
+
+button:hover {
+  background-color: var(--tertiary-color);
+  border: 3px solid var(--tertiary-color);
+}
+
+button.active {
+  color: var(--secondary-color);
+  background-color: var(--tertiary-color);
+  border: 3px solid var(--tertiary-color);
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: var(--secondary-color);
+  border-radius: 10px;
+  margin: 10px 0;
+  transition: 0.3s linear;
+}
+
+li.completed {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+li.deleting {
+  background-color: red;
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+body.dark-mode li {
+  color: var(--primary-color);
+}
+
+.task-text {
+  flex: 1;
+  text-align: left;
+  margin-left: 10px;
+}
+
+.trash-btn {
+  border: none;
+  cursor: pointer;
+  color: var(--primary-color);
+  font-size: 16px;
+  padding: 5px;
+}
+
+.trash-btn:hover {
+  color: var(--tertiary-color);
+}
+
+.edit-input {
+  flex: 1;
+  text-align: left;
+  margin-left: 10px;
+  background: none;
+  border: 0;
+  color: var(--tertiary-color);
+  font-size: 16px;
+}
+
+.edit-input:focus {
+  outline: none;
+}
+
+.sort-link {
+  text-decoration: none;
+  color: var(--primary-color);
+  margin: 0 5px;
+}
+
+.sort-link.active {
+  color: var(--tertiary-color);
+}
+
+#sortContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+
+body.dark-mode #sortContainer {
+  color: var(--primary-color);
+}
+
+#filterContainer {
+  margin-top: 15px;
+  display: flex;
+  width: 100%;
+  gap: 5px;
+}
+
+#darkModeToggle {
+  text-align: right;
+}
+
+#darkModeIcon {
+  color: var(--primary-color);
+  transition: color 0.3s ease;
+}
+
+#darkModeIcon:hover {
+  color: var(--tertiary-color);
+}
+
+body.dark-mode #darkModeIcon:hover {
+  color: #fff89b;
+}
