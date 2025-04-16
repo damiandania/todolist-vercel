@@ -89,7 +89,7 @@ function renderTask(task) {
 // Fonction pour basculer l'état de complétion d'une tâche
 function toggleTaskCompletion(task, checkbox, item) {
 	fetch(`/api/tasks/${task.id}`, {
-		method: 'PATCH',
+		method: 'PUT',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ completed: checkbox.checked })
 	})
