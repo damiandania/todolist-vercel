@@ -6,7 +6,7 @@ app.use(express.json());
 
 let currentId = 1;
 let tasks = [
-	{ id: currentId, name: "Exemple de tâche", completed: false }
+	{ id: 0, name: "Exemple de tâche", completed: false }
 ];
 
 app.get('/api/tasks', (req, res) => {
@@ -29,7 +29,7 @@ app.put('/api/tasks/:id', (req, res) => {
   if (!task) {
     return res.status(404).json({ error: 'Tarea no encontrada.' });
   }
-  task.completed = !task.completed; // Cambiar el estado de 'completed'
+  task.completed = !task.completed;
   res.json(task);
 });
 
