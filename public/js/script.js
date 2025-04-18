@@ -158,22 +158,22 @@ function deleteTask(task, item) {
 }
 
 function loadList() {
-	fetch('/api/tasks')
-		.then(res => res.json())
-		.then(tasks => {
-			const list = document.getElementById('taskList');
-			list.innerHTML = '';
+    fetch('/api/tasks')
+        .then(res => res.json())
+        .then(tasks => {
+            const list = document.getElementById('taskList');
+            list.innerHTML = '';
 
-			const filtered = tasks.filter(task => {
-				if (currentFilter.value === 'all') return true;
-				if (currentFilter.value === 'active') return !task.completed;
-				if (currentFilter.value === 'done') return task.completed;
-			});
+            const filtered = tasks.filter(task => {
+                if (currentFilter.value === 'all') return true;
+                if (currentFilter.value === 'active') return !task.completed;
+                if (currentFilter.value === 'done') return task.completed;
+            });
 
-			const sorted = sortTasks(filtered, sortCriteria.value);
-			sorted.forEach(renderTask);
-		})
-		.catch(console.error);
+            const sorted = sortTasks(filtered, sortCriteria.value);
+            sorted.forEach(renderTask);
+        })
+        .catch(console.error);
 }
 
 initializeEvents();

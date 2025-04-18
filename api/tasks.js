@@ -1,49 +1,42 @@
 const express = require('express');
 const serverless = require('serverless-http');
-const fs = require('fs');
-const path = require('path');
+const mongoose = require('mongoose');
 
 const app = express();
 app.use(express.json());
 
-const tasksFilePath = path.join(__dirname, 'database.json');
+// Conexión a MongoDB
+const mongoUri = process.env.MONGO_URI || 'your-mongodb-connection-string';
+mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
 
-// Helper function to read tasks from the JSON file
-function readTasks() {
-    const data = fs.readFileSync(tasksFilePath, 'utf-8');
-    return JSON.parse(data);
-}
+const taskSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    completed: { type: Boolean, default: false }
+});
 
-// Helper function to write tasks to the JSON file
-function writeTasks(tasks) {
-    fs.writeFileSync(tasksFilePath, JSON.stringify(tasks, null, 2));
-}
+const Task = mongoose.model('Task', taskSchema);
 
-app.get('/api/tasks', (req, res) => {
-    const tasks = readTasks();
+app.get('/api/tasks', async (req, res) => {
+    const tasks = await Task.find();
     res.json(tasks);
 });
 
-app.post('/api/tasks', (req, res) => {
+app.post('/api/tasks', async (req, res) => {
     const { name } = req.body;
     if (!name || name.trim() === '') {
         return res.status(400).json({ error: 'El nombre de la tarea es requerido.' });
     }
 
-    const tasks = readTasks();
-    const newTask = { id: tasks.length ? tasks[tasks.length - 1].id + 1 : 0, name, completed: false };
-    tasks.push(newTask);
-    writeTasks(tasks);
-
+    const newTask = new Task({ name });
+    await newTask.save();
     res.status(201).json(newTask);
 });
 
-app.put('/api/tasks/:id', (req, res) => {
-    const id = parseInt(req.params.id);
+app.put('/api/tasks/:id', async (req, res) => {
+    const { id } = req.params;
     const { name, completed } = req.body;
 
-    const tasks = readTasks();
-    const task = tasks.find(t => t.id === id);
+    const task = await Task.findById(id);
     if (!task) {
         return res.status(404).json({ error: 'Tarea no encontrada.' });
     }
@@ -51,21 +44,17 @@ app.put('/api/tasks/:id', (req, res) => {
     if (name !== undefined) task.name = name;
     if (completed !== undefined) task.completed = completed;
 
-    writeTasks(tasks);
+    await task.save();
     res.json(task);
 });
 
-app.delete('/api/tasks/:id', (req, res) => {
-    const id = parseInt(req.params.id);
+app.delete('/api/tasks/:id', async (req, res) => {
+    const { id } = req.params;
 
-    const tasks = readTasks();
-    const index = tasks.findIndex(t => t.id === id);
-    if (index === -1) {
+    const task = await Task.findByIdAndDelete(id);
+    if (!task) {
         return res.status(404).json({ error: 'Tarea no encontrada.' });
     }
-
-    tasks.splice(index, 1);
-    writeTasks(tasks);
 
     res.status(204).send();
 });
