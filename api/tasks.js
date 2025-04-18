@@ -6,7 +6,7 @@ const path = require('path');
 const app = express();
 app.use(express.json());
 
-const tasksFilePath = path.join(__dirname, 'tasks.json');
+const tasksFilePath = path.join(__dirname, 'database.json');
 
 // Helper function to read tasks from the JSON file
 function readTasks() {
