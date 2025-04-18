@@ -54,7 +54,7 @@ function addTask() {
 	saveTasks(tasks);
 	taskInput.value = '';
 	loadList();
-	showToast(taskName, 'ajoutée', "#00a0df");
+	showToast(taskName, 'ajouté', "#00a0df");
 }
 
 // Fonction pour afficher une tâche
@@ -70,7 +70,7 @@ function renderTask(task) {
 	checkbox.onchange = () => {
 		toggleTaskCompletion(task, checkbox, item);
 		if (checkbox.checked) {
-			showToast(task.name, 'completée', 'green');
+			showToast(task.name, 'completé', 'green');
 		}
 	};
 
@@ -133,7 +133,7 @@ function editTaskName(task, text, item) {
 
 function deleteTask(task, item) {
 	item.classList.add('deleting');
-	showToast(task.name, 'supprimée', 'red');
+	showToast(task.name, 'supprimé', 'red');
 	setTimeout(() => {
 		let tasks = getTasks();
 		tasks = tasks.filter(t => t.id !== task.id);
