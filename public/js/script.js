@@ -6,6 +6,15 @@ import { showToast } from './notifications.js';
 let currentFilter = { value: 'all' };
 let sortCriteria = { value: 'date' };
 
+// Utilitaires pour gérer les tâches dans le localStorage
+function getTasks() {
+    return JSON.parse(localStorage.getItem('tasks') || '[]');
+}
+
+function saveTasks(tasks) {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
 // Initialiser les événements de filtres et de tri
 function initializeEvents() {
 	// Filtres
@@ -35,22 +44,17 @@ function addTask() {
 	const taskInput = document.getElementById('taskInput');
 	const taskName = taskInput.value.trim();
 
-	if (taskName) {
-		fetch('/api/tasks', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ name: taskName })
-		})
-			.then(response => response.json())
-			.then(() => {
-				taskInput.value = '';
-				loadList();
-				showToast(taskName, 'ajoutée', "#00a0df");
-			})
-			.catch(console.error);
-	} else {
+	if (!taskName) {
 		showToast("Erreur:", "nom de tâche requis", "red");
+		return;
 	}
+
+	const tasks = getTasks();
+	tasks.push({ id: Date.now(), name: taskName, completed: false });
+	saveTasks(tasks);
+	taskInput.value = '';
+	loadList();
+	showToast(taskName, 'ajoutée', "#00a0df");
 }
 
 // Fonction pour afficher une tâche
@@ -88,20 +92,11 @@ function renderTask(task) {
 
 // Fonction pour basculer l'état de complétion d'une tâche
 function toggleTaskCompletion(task, checkbox, item) {
-	fetch(`/api/tasks/${task.id}`, {
-		method: 'PUT',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ completed: checkbox.checked })
-	})
-		.then(response => {
-			if (!response.ok) throw new Error("Erreur lors de la mise à jour");
-			return response.json();
-		})
-		.then(() => {
-			item.classList.toggle('completed', checkbox.checked);
-			if (currentFilter.value !== 'all') loadList();
-		})
-		.catch(console.error);
+	const tasks = getTasks();
+	const t = tasks.find(t => t.id === task.id);
+	if (t) t.completed = checkbox.checked;
+	saveTasks(tasks);
+	loadList();
 }
 
 // Fonction pour modifier le nom d'une tâche
@@ -118,24 +113,13 @@ function editTaskName(task, text, item) {
 
 		const newName = input.value.trim();
 		if (newName && newName !== task.name) {
-			fetch(`/api/tasks/${task.id}`, {
-				method: 'PUT',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name: newName })
-			})
-				.then(response => {
-					if (!response.ok) throw new Error("Erreur lors de la mise à jour");
-					return response.json();
-				})
-				.then(() => {
-					task.name = newName;
-					text.textContent = newName;
-					item.replaceChild(text, input);
-				})
-				.catch(console.error);
-		} else {
-			item.replaceChild(text, input);
+			const tasks = getTasks();
+			const t = tasks.find(t => t.id === task.id);
+			if (t) t.name = newName;
+			saveTasks(tasks);
+			loadList();
 		}
+		item.replaceChild(text, input);
 	};
 
 	input.addEventListener('blur', saveChanges);
@@ -151,29 +135,18 @@ function deleteTask(task, item) {
 	item.classList.add('deleting');
 	showToast(task.name, 'supprimée', 'red');
 	setTimeout(() => {
-		fetch(`/api/tasks/${task.id}`, { method: 'DELETE' })
-			.then(() => loadList())
-			.catch(console.error);
+		let tasks = getTasks();
+		tasks = tasks.filter(t => t.id !== task.id);
+		saveTasks(tasks);
+		loadList();
 	}, 300);
 }
 
 function loadList() {
-    fetch('/api/tasks')
-        .then(res => res.json())
-        .then(tasks => {
-            const list = document.getElementById('taskList');
-            list.innerHTML = '';
-
-            const filtered = tasks.filter(task => {
-                if (currentFilter.value === 'all') return true;
-                if (currentFilter.value === 'active') return !task.completed;
-                if (currentFilter.value === 'done') return task.completed;
-            });
-
-            const sorted = sortTasks(filtered, sortCriteria.value);
-            sorted.forEach(renderTask);
-        })
-        .catch(console.error);
+	const tasks = getTasks();
+	const list = document.getElementById('taskList');
+	list.innerHTML = '';
+	tasks.forEach(renderTask);
 }
 
 initializeEvents();
