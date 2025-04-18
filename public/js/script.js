@@ -143,10 +143,21 @@ function deleteTask(task, item) {
 }
 
 function loadList() {
-	const tasks = getTasks();
-	const list = document.getElementById('taskList');
-	list.innerHTML = '';
-	tasks.forEach(renderTask);
+    const tasks = getTasks();
+    const list = document.getElementById('taskList');
+    list.innerHTML = '';
+
+    // Filtrado
+    const filtered = tasks.filter(task => {
+        if (currentFilter.value === 'all') return true;
+        if (currentFilter.value === 'active') return !task.completed;
+        if (currentFilter.value === 'done') return task.completed;
+    });
+
+    // Ordenamiento
+    const sorted = sortTasks(filtered, sortCriteria.value);
+
+    sorted.forEach(renderTask);
 }
 
 initializeEvents();
