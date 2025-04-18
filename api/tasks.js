@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 
 // Conexión a MongoDB
-const mongoUri = process.env.MONGO_URI || 'your-mongodb-connection-string';
+const mongoUri = process.env.MONGO_URI || 'mongodb+srv://damiandania:g0cpnlIW4y9NXRIb@clustertodolist.nr4amow.mongodb.net/?retryWrites=true&w=majority&appName=ClusterTODOLIST';
 mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const taskSchema = new mongoose.Schema({
@@ -24,7 +24,7 @@ app.get('/api/tasks', async (req, res) => {
 app.post('/api/tasks', async (req, res) => {
     const { name } = req.body;
     if (!name || name.trim() === '') {
-        return res.status(400).json({ error: 'El nombre de la tarea es requerido.' });
+		return res.status(400).json({ erreur: 'Le nom de la tâche est requis.' });
     }
 
     const newTask = new Task({ name });
@@ -38,7 +38,7 @@ app.put('/api/tasks/:id', async (req, res) => {
 
     const task = await Task.findById(id);
     if (!task) {
-        return res.status(404).json({ error: 'Tarea no encontrada.' });
+		return res.status(404).json({ erreur: 'Tâche non trouvée.' });
     }
 
     if (name !== undefined) task.name = name;
@@ -53,7 +53,7 @@ app.delete('/api/tasks/:id', async (req, res) => {
 
     const task = await Task.findByIdAndDelete(id);
     if (!task) {
-        return res.status(404).json({ error: 'Tarea no encontrada.' });
+		return res.status(404).json({ erreur: 'Tâche non trouvée.' });
     }
 
     res.status(204).send();
